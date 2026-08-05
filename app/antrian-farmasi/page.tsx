@@ -58,9 +58,14 @@ export default function AntrianFarmasiPage() {
             mendapatkan nomor panggilan.
           </p>
         </div>
-        <button className="flex items-center gap-2 whitespace-nowrap rounded bg-white px-5 py-3 text-[14px] font-extrabold text-[#004A99] hover:bg-yellow-100 transition-colors">
+        <a
+          href="https://mitrasiaga.co.id"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 whitespace-nowrap rounded bg-white px-5 py-3 text-[14px] font-extrabold text-[#004A99] hover:bg-yellow-100 transition-colors no-underline"
+        >
           <i className="fa-solid fa-circle-info text-[#004A99]"></i> Petunjuk Mobile JKN
-        </button>
+        </a>
       </div>
     </div>
   );
