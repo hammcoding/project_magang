@@ -19,22 +19,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
+        {/* Responsive viewport meta */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className="min-h-screen bg-white text-[#17202A] text-[14px]">
         {/* ================================================================
-            HEADER / NAVBAR (Matching mitrasiaga.co.id font sizing)
+            HEADER / NAVBAR (Responsive)
             ================================================================ */}
         <header className="sticky top-0 z-50 border-b-2 border-blue-100 bg-white shadow-[0_2px_10px_rgba(0,74,153,0.05)]">
-          <div className="mx-auto flex h-[75px] max-w-[1200px] items-center justify-between px-5">
+          <div className="mx-auto flex h-[60px] sm:h-[75px] max-w-[1200px] items-center justify-between px-3 sm:px-5">
             {/* Logo & Brand */}
-            <a href="/" className="flex items-center gap-3 no-underline">
-              <div className="flex h-11 w-12 items-center justify-center rounded-lg bg-white">
+            <a href="/" className="flex items-center gap-2 sm:gap-3 no-underline">
+              <div className="flex h-9 w-10 sm:h-11 sm:w-12 items-center justify-center rounded-lg bg-white">
                 <svg
-                  width="46"
-                  height="42"
+                  width="38"
+                  height="34"
                   viewBox="0 0 160 140"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="sm:w-[46px] sm:h-[42px]"
                 >
                   <path d="M20 100L55 35L80 75L65 100H20Z" fill="#1BA345" />
                   <path d="M60 100L95 35L140 100H95Z" fill="#0D5C91" />
@@ -42,22 +45,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </svg>
               </div>
               <div className="flex flex-col">
-                <span className="text-[20px] font-extrabold leading-tight tracking-wide text-[#004A99]">
+                <span className="text-[16px] sm:text-[20px] font-extrabold leading-tight tracking-wide text-[#004A99]">
                   MITRA SIAGA
                 </span>
-                <span className="text-[11px] font-bold tracking-widest text-[#0584c0]">
+                <span className="text-[9px] sm:text-[11px] font-bold tracking-widest text-[#0584c0] hidden xs:block">
                   Rumah Sakit - Melayani Dengan Ketulusan Hati
                 </span>
               </div>
             </a>
 
-            {/* Navigation Links */}
+            {/* Mobile Menu Button */}
+            <button className="md:hidden text-[#004A99] p-2" aria-label="Menu">
+              <i className="fa-solid fa-bars text-xl"></i>
+            </button>
+
+            {/* Navigation Links - Desktop */}
             <nav className="hidden md:block">
-              <ul className="flex list-none gap-7">
+              <ul className="flex list-none gap-4 lg:gap-7">
                 <li>
                   <a
                     href="#"
-                    className="text-[14px] font-bold text-gray-600 no-underline transition-colors hover:text-[#004A99]"
+                    className="text-[13px] lg:text-[14px] font-bold text-gray-600 no-underline transition-colors hover:text-[#004A99]"
                   >
                     Beranda
                   </a>
@@ -65,7 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <li>
                   <a
                     href="#"
-                    className="text-[14px] font-bold text-gray-600 no-underline transition-colors hover:text-[#004A99]"
+                    className="text-[13px] lg:text-[14px] font-bold text-gray-600 no-underline transition-colors hover:text-[#004A99]"
                   >
                     Tentang Kami
                   </a>
@@ -73,7 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <li>
                   <a
                     href="#"
-                    className="text-[14px] font-bold text-gray-600 no-underline transition-colors hover:text-[#004A99]"
+                    className="text-[13px] lg:text-[14px] font-bold text-gray-600 no-underline transition-colors hover:text-[#004A99]"
                   >
                     Cabang
                   </a>
@@ -81,7 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <li>
                   <a
                     href="#"
-                    className="text-[14px] font-bold text-gray-600 no-underline transition-colors hover:text-[#004A99]"
+                    className="text-[13px] lg:text-[14px] font-bold text-gray-600 no-underline transition-colors hover:text-[#004A99]"
                   >
                     Reservasi
                   </a>
@@ -89,7 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <li>
                   <a
                     href="#"
-                    className="relative border-b-[3.5px] border-[#004A99] pb-[24px] text-[14px] font-bold text-[#004A99] no-underline"
+                    className="relative border-b-[3.5px] border-[#004A99] pb-[18px] lg:pb-[24px] text-[13px] lg:text-[14px] font-bold text-[#004A99] no-underline"
                   >
                     Media & Informasi
                   </a>
@@ -97,7 +105,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <li>
                   <a
                     href="#"
-                    className="text-[14px] font-bold text-gray-600 no-underline transition-colors hover:text-[#004A99]"
+                    className="text-[13px] lg:text-[14px] font-bold text-gray-600 no-underline transition-colors hover:text-[#004A99]"
                   >
                     Kontak
                   </a>
@@ -108,18 +116,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </header>
 
         {/* ================================================================
-            PAGE TITLE & BREADCRUMB BANNER
+            PAGE TITLE & BREADCRUMB BANNER (Responsive)
             ================================================================ */}
         <section
-          className="border-b border-gray-200 py-6"
+          className="border-b border-gray-200 py-4 sm:py-6"
           style={{
             backgroundColor: "#F1F5F9",
             backgroundImage: "radial-gradient(#CBD5E1 1px, transparent 1px)",
             backgroundSize: "16px 16px",
           }}
         >
-          <div className="mx-auto max-w-[1200px] px-5">
-            <div className="mb-2 flex items-center gap-2 text-[14px] text-[#0584c0]">
+          <div className="mx-auto max-w-[1200px] px-3 sm:px-5">
+            <div className="mb-1.5 sm:mb-2 flex items-center gap-2 text-[13px] sm:text-[14px] text-[#0584c0]">
               <a href="#" className="text-[#0584c0] no-underline">
                 <i className="fa-solid fa-house"></i>
               </a>
@@ -128,7 +136,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Media & Informasi
               </span>
             </div>
-            <h1 className="text-[32px] font-extrabold tracking-tight text-[#004A99]">
+            <h1 className="text-[24px] sm:text-[32px] font-extrabold tracking-tight text-[#004A99]">
               Media & Informasi
             </h1>
           </div>
@@ -140,29 +148,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="bg-white">{children}</main>
 
         {/* ================================================================
-            FOOTER (Matching mitrasiaga.co.id font sizing)
+            FOOTER (Responsive)
             ================================================================ */}
-        <footer className="bg-[#0D5C91] py-6 text-[14px] text-white">
-          <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-5 px-5">
-            <p className="m-0 font-medium opacity-95 text-[14px]">
+        <footer className="bg-[#0D5C91] py-5 sm:py-6 text-[13px] sm:text-[14px] text-white">
+          <div className="mx-auto flex max-w-[1200px] flex-col sm:flex-row flex-wrap items-center justify-between gap-3 sm:gap-5 px-3 sm:px-5">
+            <p className="m-0 font-medium opacity-95 text-[13px] sm:text-[14px] text-center sm:text-left">
               © 2026 RS Mitra Siaga. All rights reserved.
             </p>
-            <div className="flex items-center gap-5">
-              <span className="font-bold text-white text-[14px]">Link Terkait</span>
-              <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-5">
+              <span className="font-bold text-white text-[13px] sm:text-[14px]">Link Terkait</span>
+              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
                 <a
                   href="https://kemkes.go.id"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-[14px] text-white/90 no-underline transition-opacity hover:text-white hover:underline"
+                  className="flex items-center gap-1.5 text-[12px] sm:text-[14px] text-white/90 no-underline transition-opacity hover:text-white hover:underline"
                 >
-                  <i className="fa-solid fa-hospital text-blue-200"></i> Kementerian Kesehatan
+                  <i className="fa-solid fa-hospital text-blue-200"></i> Kemenkes
                 </a>
                 <a
                   href="https://bpjs-kesehatan.go.id"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-[14px] text-white/90 no-underline transition-opacity hover:text-white hover:underline"
+                  className="flex items-center gap-1.5 text-[12px] sm:text-[14px] text-white/90 no-underline transition-opacity hover:text-white hover:underline"
                 >
                   <i className="fa-solid fa-heart-pulse text-green-300"></i> BPJS Kesehatan
                 </a>
@@ -170,9 +178,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   href="https://bpjsketenagakerjaan.go.id"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-[14px] text-white/90 no-underline transition-opacity hover:text-white hover:underline"
+                  className="flex items-center gap-1.5 text-[12px] sm:text-[14px] text-white/90 no-underline transition-opacity hover:text-white hover:underline"
                 >
-                  <i className="fa-solid fa-building-shield text-blue-200"></i> BPJS Ketenagakerjaan
+                  <i className="fa-solid fa-building-shield text-blue-200"></i> BPJS TK
                 </a>
               </div>
             </div>

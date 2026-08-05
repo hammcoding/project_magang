@@ -165,16 +165,16 @@ function DetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 p-5"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 p-3 sm:p-5"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-[620px] overflow-hidden rounded-lg bg-white shadow-2xl">
+      <div className="w-full max-w-[620px] max-h-[90vh] overflow-y-auto overflow-hidden rounded-lg bg-white shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between bg-[#004A99] px-5 py-4 text-white">
+        <div className="flex items-center justify-between bg-[#004A99] px-4 py-3 sm:px-5 sm:py-4 text-white">
           <div>
-            <h3 className="text-lg font-bold">Antrian - {item.poliName}</h3>
+            <h3 className="text-base sm:text-lg font-bold">Antrian - {item.poliName}</h3>
             <span className="text-xs text-blue-200">{item.room}</span>
           </div>
           <button
@@ -186,16 +186,16 @@ function DetailModal({
         </div>
 
         {/* Body */}
-        <div className="p-5">
+        <div className="p-4 sm:p-5">
           {/* Doctor Profile */}
-          <div className="mb-4 flex items-center gap-3.5 border-b border-gray-200 pb-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-xl text-[#004A99]">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="mb-4 flex items-center gap-3 sm:gap-3.5 border-b border-gray-200 pb-4">
+            <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-blue-100 text-xl text-[#004A99] shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <div>
-              <h4 className="text-base font-bold text-[#004A99]">
+            <div className="min-w-0">
+              <h4 className="text-sm sm:text-base font-bold text-[#004A99] truncate">
                 {item.docName}
               </h4>
               <p className="text-xs text-gray-500">
@@ -208,28 +208,28 @@ function DetailModal({
           </div>
 
           {/* Summary Cards */}
-          <div className="mb-4 grid grid-cols-3 gap-2.5">
-            <div className="rounded border border-[#0584c0] bg-blue-100 p-2.5 text-center">
-              <span className="block text-[0.7rem] text-gray-500">
+          <div className="mb-4 grid grid-cols-3 gap-2">
+            <div className="rounded border border-[#0584c0] bg-blue-100 p-2 sm:p-2.5 text-center">
+              <span className="block text-[0.65rem] sm:text-[0.7rem] text-gray-500">
                 Sedang Dipanggil
               </span>
-              <span className="text-xl font-extrabold text-[#004A99]">
+              <span className="text-lg sm:text-xl font-extrabold text-[#004A99]">
                 {item.currentNum}
               </span>
             </div>
-            <div className="rounded border border-gray-300 bg-gray-50 p-2.5 text-center">
-              <span className="block text-[0.7rem] text-gray-500">
+            <div className="rounded border border-gray-300 bg-gray-50 p-2 sm:p-2.5 text-center">
+              <span className="block text-[0.65rem] sm:text-[0.7rem] text-gray-500">
                 Berikutnya
               </span>
-              <span className="text-xl font-extrabold text-[#004A99]">
+              <span className="text-lg sm:text-xl font-extrabold text-[#004A99]">
                 {nextNum}
               </span>
             </div>
-            <div className="rounded border border-gray-300 bg-gray-50 p-2.5 text-center">
-              <span className="block text-[0.7rem] text-gray-500">
+            <div className="rounded border border-gray-300 bg-gray-50 p-2 sm:p-2.5 text-center">
+              <span className="block text-[0.65rem] sm:text-[0.7rem] text-gray-500">
                 Sisa Antrian
               </span>
-              <span className="text-xl font-extrabold text-[#004A99]">
+              <span className="text-lg sm:text-xl font-extrabold text-[#004A99]">
                 {remaining} Pasien
               </span>
             </div>
@@ -249,7 +249,7 @@ function DetailModal({
                   <th className="px-3 py-2 text-left text-[#004A99]">
                     Status Panggilan
                   </th>
-                  <th className="px-3 py-2 text-left text-[#004A99]">
+                  <th className="px-3 py-2 text-left text-[#004A99] hidden sm:table-cell">
                     Waktu Masuk
                   </th>
                 </tr>
@@ -262,7 +262,7 @@ function DetailModal({
                       className="px-3 py-2"
                       dangerouslySetInnerHTML={{ __html: q.status }}
                     />
-                    <td className="px-3 py-2">{q.time}</td>
+                    <td className="px-3 py-2 hidden sm:table-cell">{q.time}</td>
                   </tr>
                 ))}
               </tbody>
@@ -271,12 +271,12 @@ function DetailModal({
         </div>
 
         {/* Footer */}
-        <div className="flex justify-between border-t border-gray-200 bg-gray-50 px-5 py-3.5">
+        <div className="flex flex-col sm:flex-row justify-between gap-2 border-t border-gray-200 bg-gray-50 px-4 sm:px-5 py-3">
           <button
             onClick={onSimulateCall}
-            className="flex items-center gap-1.5 rounded bg-green-600 px-4 py-2 text-sm font-bold text-white hover:bg-green-700 transition-colors"
+            className="flex items-center justify-center gap-1.5 rounded bg-green-600 px-4 py-2 text-sm font-bold text-white hover:bg-green-700 transition-colors"
           >
-            <i className="fa-solid fa-bullhorn"></i> Simulasi Panggil Antrian Selanjutnya
+            <i className="fa-solid fa-bullhorn"></i> Simulasi Panggil Antrian
           </button>
           <button
             onClick={onClose}
@@ -301,6 +301,7 @@ export default function AntrianPoliklinik() {
   const [searchQuery, setSearchQuery] = useState('');
   const [countdown, setCountdown] = useState(60);
   const [modalData, setModalData] = useState<DetailModalData | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Auto-refresh countdown timer
   useEffect(() => {
@@ -393,10 +394,13 @@ export default function AntrianPoliklinik() {
     setTimeout(() => openDetail(item.id), 50);
   }, [modalData, openDetail]);
 
-  // Manual refresh
+  // Manual refresh with animation
   const handleRefresh = () => {
+    setIsRefreshing(true);
     setCountdown(60);
     // TODO: Fetch fresh data from API here
+    // Remove spinning state after animation completes
+    setTimeout(() => setIsRefreshing(false), 600);
   };
 
   return (
@@ -404,10 +408,10 @@ export default function AntrianPoliklinik() {
       {/* ================================================================
           FILTER PANEL
           ================================================================ */}
-      <div className="mb-6 rounded-md border border-gray-300 bg-white p-5 shadow-sm">
-        <div className="flex flex-wrap items-end gap-5">
+      <div className="mb-4 sm:mb-6 rounded-md border border-gray-300 bg-white p-3 sm:p-5 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-3 sm:gap-5">
           {/* Category Dropdown */}
-          <div className="flex min-w-[240px] flex-1 flex-col gap-1.5">
+          <div className="flex min-w-0 sm:min-w-[240px] flex-1 flex-col gap-1.5">
             <label
               htmlFor="poliSelect"
               className="text-sm font-semibold text-gray-900"
@@ -431,7 +435,7 @@ export default function AntrianPoliklinik() {
           </div>
 
           {/* Search Input */}
-          <div className="flex min-w-[240px] flex-1 flex-col gap-1.5">
+          <div className="flex min-w-0 sm:min-w-[240px] flex-1 flex-col gap-1.5">
             <label
               htmlFor="poliSearchInput"
               className="text-sm font-semibold text-gray-900"
@@ -469,11 +473,11 @@ export default function AntrianPoliklinik() {
           <div className="flex gap-2.5">
             <button
               onClick={handleRefresh}
-              className="inline-flex items-center gap-2 rounded bg-[#0584c0] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#004A99]"
+              className="inline-flex items-center gap-2 rounded bg-[#0584c0] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#004A99] transition-colors w-full sm:w-auto justify-center"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
+                className={`h-4 w-4 transition-transform ${isRefreshing ? 'animate-spin-refresh' : ''}`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -494,16 +498,16 @@ export default function AntrianPoliklinik() {
       {/* ================================================================
           QUEUE MONITOR TABLE CONTAINER CARD
           ================================================================ */}
-      <div className="mb-6 overflow-hidden rounded-lg border border-[#0584c0] bg-white shadow-md">
+      <div className="mb-4 sm:mb-6 overflow-hidden rounded-lg border border-[#0584c0] bg-white shadow-md">
         {/* Banner Header */}
-        <div className="bg-[#004A99] px-5 py-3.5 text-center text-white">
-          <h2 className="m-0 text-[20px] font-bold">
+        <div className="bg-[#004A99] px-4 sm:px-5 py-3 sm:py-3.5 text-center text-white">
+          <h2 className="m-0 text-[17px] sm:text-[20px] font-bold">
             Antrian Pemeriksaan Dokter Rawat Jalan
           </h2>
         </div>
 
-        {/* Table */}
-        <div className="w-full overflow-x-auto bg-white">
+        {/* Table - Desktop */}
+        <div className="w-full overflow-x-auto bg-white hidden md:block">
           <table className="w-full border-collapse text-left">
             <thead>
               <tr className="border-b border-[#0584c0]">
@@ -575,8 +579,61 @@ export default function AntrianPoliklinik() {
           </table>
         </div>
 
+        {/* Mobile Card View */}
+        <div className="block md:hidden">
+          {filteredData.length === 0 ? (
+            <div className="px-4 py-8 text-center text-[14px] text-gray-400">
+              Tidak ada data antrian poliklinik yang sesuai dengan pencarian Anda.
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-200">
+              {filteredData.map((item) => (
+                <div
+                  key={item.id}
+                  className="p-4 hover:bg-blue-50/30 transition-colors"
+                >
+                  {/* Poli Name & Room */}
+                  <div className="flex items-start justify-between gap-2 mb-3">
+                    <div>
+                      <strong className="block text-[14px] text-[#004A99]">
+                        {item.poliName}
+                      </strong>
+                      <span className="text-[12px] font-semibold text-gray-500">
+                        {item.room}
+                      </span>
+                    </div>
+                    <StatusBadge status={item.status} />
+                  </div>
+
+                  {/* Doctor */}
+                  <p className="text-[13px] font-bold text-gray-800 mb-3">
+                    <i className="fa-solid fa-user-doctor text-[#0584c0] mr-1.5"></i>
+                    {item.docName}
+                  </p>
+
+                  {/* Queue Number + Action */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-semibold text-gray-500">Antrian:</span>
+                      <span className="inline-block rounded-md border-[1.5px] border-[#0584c0] bg-gradient-to-br from-blue-100 to-blue-50 px-3 py-1 text-[16px] font-extrabold text-[#004A99]">
+                        {item.currentNum}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => openDetail(item.id)}
+                      className="rounded bg-[#27a8df] px-3 py-1.5 text-[12px] font-bold text-white hover:bg-[#0584c0]"
+                    >
+                      Detail
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Footnote */}
-        <div className="bg-white px-5 py-3 text-[14px] text-gray-500">
+        <div className="bg-white px-4 sm:px-5 py-3 text-[13px] sm:text-[14px] text-gray-500">
           <p>Klik nama ruang / dokter untuk melihat detail antrian</p>
           <p>Antrian online ini diperbaharui otomatis setiap 60 detik.</p>
         </div>
@@ -585,7 +642,7 @@ export default function AntrianPoliklinik() {
       {/* ================================================================
           NOTICE ALERT
           ================================================================ */}
-      <div className="mt-6 text-[15px] font-extrabold leading-relaxed">
+      <div className="mt-4 sm:mt-6 text-[13px] sm:text-[15px] font-extrabold leading-relaxed">
         <span className="font-black text-red-500">PERHATIAN :</span>{' '}
         JIKA NOMOR ANTRIAN ANDA SUDAH TERLEWATI, MAKA AKAN DIPANGGIL KEMBALI
         SETELAH 5 ANTRIAN BERIKUTNYA

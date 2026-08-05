@@ -17,3 +17,74 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+/* ============================================================================
+   REFRESH BUTTON SPIN ANIMATION
+   ============================================================================ */
+@keyframes spin-refresh {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-refresh {
+  animation: spin-refresh 0.6s ease-in-out;
+}
+
+/* ============================================================================
+   RESPONSIVE TABLE: Card-based layout on small screens
+   ============================================================================ */
+@media (max-width: 768px) {
+  /* Make tables render as stacked blocks on mobile */
+  .responsive-table table,
+  .responsive-table thead,
+  .responsive-table tbody,
+  .responsive-table th,
+  .responsive-table td,
+  .responsive-table tr {
+    display: block;
+  }
+
+  .responsive-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .responsive-table tbody tr {
+    margin-bottom: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px 16px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .responsive-table tbody td {
+    padding: 6px 0 !important;
+    border: none !important;
+    text-align: left !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .responsive-table tbody td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    font-size: 12px;
+    color: #004A99;
+    min-width: 110px;
+    flex-shrink: 0;
+  }
+}
