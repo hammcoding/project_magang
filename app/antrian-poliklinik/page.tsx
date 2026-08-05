@@ -59,7 +59,7 @@ export default function AntrianPoliklinikPage() {
           </p>
         </div>
         <a
-          href="https://mitrasiaga.co.id"
+          href="https://bpjs-kesehatan.go.id/bpjs/post/read/2021/2042/Panduan-Layanan-Mobile-JKN"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 whitespace-nowrap rounded bg-white px-5 py-3 text-[14px] font-extrabold text-[#004A99] hover:bg-yellow-100 transition-colors no-underline"
