@@ -73,13 +73,13 @@ const initialFarmasiData: FarmasiItem[] = [
 function FarmasiStatusBadge({ status }: { status: string }) {
   if (status === 'ready') {
     return (
-      <span className="inline-block rounded border border-green-300 bg-green-50 px-2.5 py-1 text-xs font-bold text-green-800">
+      <span className="inline-block rounded px-2.5 py-1 text-xs font-bold border border-green-300 bg-green-50 text-green-800">
         Siap Diambil
       </span>
     );
   }
   return (
-    <span className="inline-block rounded border border-yellow-300 bg-yellow-50 px-2.5 py-1 text-xs font-bold text-yellow-800">
+    <span className="inline-block rounded px-2.5 py-1 text-xs font-bold border border-yellow-300 bg-yellow-50 text-yellow-800">
       Proses Penyiapan
     </span>
   );
@@ -107,7 +107,7 @@ function TicketModal({
       const searchCode = code.toUpperCase().trim();
       if (!searchCode) {
         setSearchResult(
-          <div className="rounded p-2.5 text-red-500">
+          <div className="rounded p-2.5 text-red-500 font-semibold text-sm">
             Masukkan nomor resep Anda.
           </div>
         );
@@ -120,24 +120,24 @@ function TicketModal({
 
       if (match) {
         setSearchResult(
-          <div className="rounded border-l-4 border-[#004A99] bg-gray-100 p-3.5">
-            <h4 className="font-bold text-[#004A99]">
+          <div className="rounded-lg border-l-4 border-[#004A99] border border-gray-200 bg-gray-50 p-3.5 text-sm">
+            <h4 className="font-bold text-[#004A99] text-base mb-1">
               Resep No. {match.currentNum}
             </h4>
-            <p>
+            <p className="text-gray-700">
               <strong>Pasien:</strong> {match.patientName}
             </p>
-            <p>
+            <p className="text-gray-700">
               <strong>Loket:</strong> {match.counterName}
             </p>
-            <p>
+            <p className="text-gray-700">
               <strong>Status:</strong> {match.statusText}
             </p>
           </div>
         );
       } else {
         setSearchResult(
-          <div className="rounded border-l-4 border-yellow-500 bg-yellow-50 p-3.5">
+          <div className="rounded-lg border-l-4 border-yellow-500 border border-yellow-200 bg-yellow-50 p-3.5 text-sm text-yellow-900">
             <p>
               Nomor Tiket &quot;{searchCode}&quot; sedang berada dalam urutan
               proses apotek.
@@ -149,7 +149,6 @@ function TicketModal({
     [farmasiData]
   );
 
-  // Pre-fill search when opened with a ticket number
   useEffect(() => {
     if (!isOpen) {
       setTicketInput('');
@@ -167,7 +166,7 @@ function TicketModal({
       }}
     >
       <div className="w-full max-w-[620px] max-h-[90vh] overflow-y-auto overflow-hidden rounded-lg bg-white shadow-2xl">
-        {/* Header */}
+        {/* Header Container */}
         <div className="flex items-center justify-between bg-[#004A99] px-4 sm:px-5 py-3 sm:py-4 text-white">
           <div>
             <h3 className="text-base sm:text-lg font-bold">
@@ -185,7 +184,7 @@ function TicketModal({
           </button>
         </div>
 
-        {/* Body */}
+        {/* Body Container */}
         <div className="p-4 sm:p-5">
           <div className="mb-4 flex flex-col sm:flex-row gap-2.5">
             <input
@@ -197,11 +196,11 @@ function TicketModal({
               }}
               placeholder="Masukkan Kode Resep (misal: R-018 atau F-042)"
               autoComplete="off"
-              className="flex-1 rounded border border-gray-300 px-2.5 py-2.5 text-sm"
+              className="flex-1 rounded-md border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#0584c0] focus:ring-1 focus:ring-[#0584c0]"
             />
             <button
               onClick={() => performSearch(ticketInput)}
-              className="flex items-center justify-center gap-1.5 rounded bg-[#0584c0] px-4 py-2.5 font-bold text-white hover:bg-[#004A99] transition-colors text-sm"
+              className="flex items-center justify-center gap-1.5 rounded-md bg-[#0584c0] px-4 py-2.5 font-bold text-white hover:bg-[#004A99] transition-colors text-sm"
             >
               <i className="fa-solid fa-magnifying-glass"></i> Cek Tiket
             </button>
@@ -209,11 +208,11 @@ function TicketModal({
           {searchResult && <div>{searchResult}</div>}
         </div>
 
-        {/* Footer */}
+        {/* Footer Container */}
         <div className="border-t border-gray-200 bg-gray-50 px-4 sm:px-5 py-3">
           <button
             onClick={onClose}
-            className="rounded bg-gray-400 px-4 py-2 text-sm font-bold text-white hover:bg-gray-500"
+            className="rounded-md bg-gray-400 px-4 py-2 text-sm font-bold text-white hover:bg-gray-500"
           >
             Tutup
           </button>
@@ -244,7 +243,6 @@ export default function AntrianFarmasi() {
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          // TODO: Fetch fresh data from API here
           return 60;
         }
         return prev - 1;
@@ -274,13 +272,13 @@ export default function AntrianFarmasi() {
   };
 
   return (
-    <section className="w-full">
+    <div className="w-full flex flex-col gap-6">
       {/* ================================================================
-          PHARMACY SUMMARY COUNTER WIDGETS
+          1. PHARMACY SUMMARY COUNTER WIDGET CONTAINERS
           ================================================================ */}
-      <div className="mb-4 sm:mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         {/* Sedang Penyiapan */}
-        <div className="flex items-center rounded-md border border-gray-300 border-l-4 border-l-amber-600 bg-white px-4 sm:px-6 py-3 sm:py-4">
+        <div className="flex items-center rounded-lg border border-gray-200 border-l-4 border-l-amber-600 bg-white px-4 sm:px-6 py-4 shadow-sm">
           <div>
             <span className="block text-2xl sm:text-3xl font-extrabold leading-tight text-[#004A99]">
               {statPreparing}
@@ -292,7 +290,7 @@ export default function AntrianFarmasi() {
         </div>
 
         {/* Siap Diambil */}
-        <div className="flex items-center rounded-md border border-gray-300 border-l-4 border-l-green-700 bg-white px-4 sm:px-6 py-3 sm:py-4">
+        <div className="flex items-center rounded-lg border border-gray-200 border-l-4 border-l-green-600 bg-white px-4 sm:px-6 py-4 shadow-sm">
           <div>
             <span className="block text-2xl sm:text-3xl font-extrabold leading-tight text-[#004A99]">
               {statReady}
@@ -304,7 +302,7 @@ export default function AntrianFarmasi() {
         </div>
 
         {/* Resep Selesai */}
-        <div className="flex items-center rounded-md border border-gray-300 border-l-4 border-l-[#004A99] bg-white px-4 sm:px-6 py-3 sm:py-4">
+        <div className="flex items-center rounded-lg border border-gray-200 border-l-4 border-l-[#004A99] bg-white px-4 sm:px-6 py-4 shadow-sm">
           <div>
             <span className="block text-2xl sm:text-3xl font-extrabold leading-tight text-[#004A99]">
               {statDone}
@@ -317,9 +315,9 @@ export default function AntrianFarmasi() {
       </div>
 
       {/* ================================================================
-          FILTER PANEL
+          2. FILTER PANEL CONTAINER CARD
           ================================================================ */}
-      <div className="mb-4 sm:mb-6 rounded-md border border-gray-300 bg-white p-3 sm:p-5 shadow-sm">
+      <div className="rounded-lg border border-[#0584c0]/30 bg-white p-4 sm:p-5 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-3 sm:gap-5">
           {/* Category Dropdown */}
           <div className="flex min-w-0 sm:min-w-[240px] flex-1 flex-col gap-1.5">
@@ -333,7 +331,7 @@ export default function AntrianFarmasi() {
               id="farmasiSelect"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="rounded border border-gray-400 bg-white px-3 py-2.5 text-sm font-semibold text-gray-900 outline-none focus:border-[#0584c0]"
+              className="rounded-md border border-gray-300 bg-white px-3 py-2.5 text-sm font-semibold text-gray-900 outline-none focus:border-[#0584c0] focus:ring-1 focus:ring-[#0584c0]"
             >
               <option value="all">Antrian Farmasi (Semua Loket)</option>
               <option value="non-racik">
@@ -377,7 +375,7 @@ export default function AntrianFarmasi() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Ketik No. Tiket atau Nama Pasien..."
                 autoComplete="off"
-                className="w-full rounded border border-gray-400 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#0584c0]"
+                className="w-full rounded-md border border-gray-300 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#0584c0] focus:ring-1 focus:ring-[#0584c0]"
               />
             </div>
           </div>
@@ -386,7 +384,7 @@ export default function AntrianFarmasi() {
           <div className="flex gap-2.5">
             <button
               onClick={() => setTicketModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded bg-[#daa732] px-4 py-2.5 text-sm font-bold text-gray-900 hover:bg-[#c49427] transition-colors w-full sm:w-auto justify-center"
+              className="inline-flex items-center gap-2 rounded-md bg-[#daa732] px-4 py-2.5 text-sm font-bold text-gray-900 hover:bg-[#c49427] transition-colors w-full sm:w-auto justify-center shadow-xs"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -409,167 +407,102 @@ export default function AntrianFarmasi() {
       </div>
 
       {/* ================================================================
-          PHARMACY QUEUE MONITOR TABLE CONTAINER CARD
+          3. PHARMACY QUEUE MONITOR CONTAINER CARDS LIST (BOXED CONTAINER TABLE)
           ================================================================ */}
-      <div className="mb-4 sm:mb-6 overflow-hidden rounded-lg border border-[#0584c0] bg-white shadow-md">
-        {/* Banner Header */}
-        <div className="bg-[#058446] px-4 sm:px-5 py-3 sm:py-3.5 text-center text-white">
-          <h2 className="m-0 text-[17px] sm:text-[20px] font-bold">
+      <div className="rounded-xl border border-[#0584c0] bg-white shadow-sm overflow-hidden">
+        {/* Banner Header Container */}
+        <div className="bg-[#058446] px-4 sm:px-6 py-4 text-center text-white">
+          <h2 className="m-0 text-[17px] sm:text-[20px] font-bold tracking-wide">
             Antrian Pelayanan Instalasi Farmasi
           </h2>
         </div>
 
-        {/* Table - Desktop */}
-        <div className="w-full overflow-x-auto bg-white hidden md:block">
-          <table className="w-full border-collapse text-left">
-            <thead>
-              <tr className="border-b border-[#0584c0]">
-                <th className="border-r border-[#0584c0] bg-[#0584c0] px-5 py-3.5 text-[15px] font-semibold text-white">
-                  Loket Pelayanan
-                </th>
-                <th className="border-r border-[#0584c0] bg-[#0584c0] px-5 py-3.5 text-[15px] font-semibold text-white">
-                  Kategori Resep
-                </th>
-                <th className="border-r border-[#0584c0] bg-[#0584c0] px-5 py-3.5 text-[15px] font-semibold text-white">
-                  Nomor Antrian Dipanggil
-                </th>
-                <th className="border-r border-[#0584c0] bg-[#0584c0] px-5 py-3.5 text-[15px] font-semibold text-white">
-                  Nama Pasien
-                </th>
-                <th className="border-r border-[#0584c0] bg-[#0584c0] px-5 py-3.5 text-[15px] font-semibold text-white">
-                  Status Pengerjaan
-                </th>
-                <th className="border-r border-[#0584c0] bg-[#0584c0] px-5 py-3.5 text-[15px] font-semibold text-white">
-                  Estimasi Ambil
-                </th>
-                <th className="bg-[#0584c0] px-5 py-3.5 text-[15px] font-semibold text-white">
-                  Aksi
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="px-5 py-8 text-center text-[14px] text-gray-400"
-                  >
-                    Tidak ada antrian farmasi yang cocok.
-                  </td>
-                </tr>
-              ) : (
-                filteredData.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="border-b border-[#0584c0]/40 transition-colors hover:bg-blue-50/50"
-                  >
-                    <td className="border-r border-[#0584c0]/40 px-5 py-4 align-middle text-[15px] font-bold">
-                      {item.counterName}
-                    </td>
-                    <td className="border-r border-[#0584c0]/40 px-5 py-4 align-middle text-[13px] font-semibold text-[#0584c0]">
-                      {item.catName}
-                    </td>
-                    <td className="border-r border-[#0584c0]/40 px-5 py-4 align-middle">
-                      <span className="inline-block rounded-md border-[1.5px] border-[#0584c0] bg-gradient-to-br from-blue-100 to-blue-50 px-3.5 py-1.5 text-[18px] font-extrabold text-[#004A99]">
-                        {item.currentNum}
-                      </span>
-                    </td>
-                    <td className="border-r border-[#0584c0]/40 px-5 py-4 align-middle text-[15px] font-bold">
-                      {item.patientName}
-                    </td>
-                    <td className="border-r border-[#0584c0]/40 px-5 py-4 align-middle">
-                      <FarmasiStatusBadge status={item.status} />
-                    </td>
-                    <td className="border-r border-[#0584c0]/40 px-5 py-4 align-middle text-[13px]">
-                      <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
-                      {item.estTime}
-                    </td>
-                    <td className="px-5 py-4 align-middle">
-                      <button
-                        onClick={() => openTicketWithNumber(item.currentNum)}
-                        className="rounded bg-[#27a8df] px-3 py-1.5 text-[13px] font-bold text-white hover:bg-[#0584c0]"
-                      >
-                        Cek Resep
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        {/* Container Cards Wrapper */}
+        <div className="p-4 sm:p-5 flex flex-col gap-3 bg-[#F8FAFC]">
+          {/* Header Legend Card Container (Desktop) */}
+          <div className="hidden md:grid grid-cols-12 gap-4 rounded-lg bg-[#0584c0] px-5 py-3.5 text-white font-semibold text-[14px]">
+            <div className="col-span-3">Loket Pelayanan</div>
+            <div className="col-span-2">Kategori Resep</div>
+            <div className="col-span-2 text-center">Nomor Antrian Dipanggil</div>
+            <div className="col-span-2">Nama Pasien</div>
+            <div className="col-span-2 text-center">Status &amp; Estimasi</div>
+            <div className="col-span-1 text-center">Aksi</div>
+          </div>
 
-        {/* Mobile Card View */}
-        <div className="block md:hidden">
+          {/* Individual Queue Item Container Cards */}
           {filteredData.length === 0 ? (
-            <div className="px-4 py-8 text-center text-[14px] text-gray-400">
-              Tidak ada antrian farmasi yang cocok.
+            <div className="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-400 text-sm">
+              Tidak ada antrian farmasi yang cocok dengan pencarian Anda.
             </div>
           ) : (
-            <div className="divide-y divide-gray-200">
-              {filteredData.map((item) => (
-                <div
-                  key={item.id}
-                  className="p-4 hover:bg-blue-50/30 transition-colors"
-                >
-                  {/* Loket Name & Status */}
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <strong className="text-[14px] font-bold text-gray-900">
-                      {item.counterName}
-                    </strong>
-                    <FarmasiStatusBadge status={item.status} />
-                  </div>
+            filteredData.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-lg border border-gray-200 bg-white p-4 sm:p-5 shadow-xs hover:border-[#0584c0] hover:shadow-md transition-all duration-200 flex flex-col md:grid md:grid-cols-12 gap-3 md:gap-4 items-start md:items-center"
+              >
+                {/* Counter Name */}
+                <div className="md:col-span-3 w-full">
+                  <strong className="block text-[15px] font-bold text-gray-900">
+                    {item.counterName}
+                  </strong>
+                </div>
 
-                  {/* Category */}
-                  <p className="text-[12px] font-semibold text-[#0584c0] mb-2">
-                    {item.catName}
-                  </p>
+                {/* Category */}
+                <div className="md:col-span-2 w-full text-[13px] font-semibold text-[#0584c0]">
+                  {item.catName}
+                </div>
 
-                  {/* Patient + Queue Number */}
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <p className="text-[13px] font-bold text-gray-800">
-                        <i className="fa-solid fa-user text-[#0584c0] mr-1"></i>
-                        {item.patientName}
-                      </p>
-                      <p className="text-[12px] text-gray-500 mt-0.5">
-                        <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
-                        {item.estTime}
-                      </p>
-                    </div>
-                    <span className="inline-block rounded-md border-[1.5px] border-[#0584c0] bg-gradient-to-br from-blue-100 to-blue-50 px-3 py-1 text-[16px] font-extrabold text-[#004A99]">
-                      {item.currentNum}
-                    </span>
-                  </div>
+                {/* Queue Number Badge */}
+                <div className="md:col-span-2 w-full flex items-center justify-between md:justify-center">
+                  <span className="text-[12px] font-semibold text-gray-500 md:hidden">No. Antrian:</span>
+                  <span className="inline-block rounded-lg border-[1.5px] border-[#0584c0] bg-gradient-to-br from-blue-100 to-blue-50 px-4 py-1.5 text-[17px] sm:text-[18px] font-extrabold text-[#004A99] shadow-xs">
+                    {item.currentNum}
+                  </span>
+                </div>
 
-                  {/* Action */}
+                {/* Patient Name */}
+                <div className="md:col-span-2 w-full text-[14px] sm:text-[15px] font-bold text-gray-800">
+                  <i className="fa-solid fa-user text-[#0584c0] mr-1.5 md:hidden"></i>
+                  {item.patientName}
+                </div>
+
+                {/* Status & Estimasi */}
+                <div className="md:col-span-2 w-full flex flex-col items-start md:items-center gap-1">
+                  <FarmasiStatusBadge status={item.status} />
+                  <span className="text-[12px] text-gray-500">
+                    <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
+                    {item.estTime}
+                  </span>
+                </div>
+
+                {/* Action Button */}
+                <div className="md:col-span-1 w-full flex justify-end md:justify-center pt-2 md:pt-0 border-t md:border-0 border-gray-100">
                   <button
                     onClick={() => openTicketWithNumber(item.currentNum)}
-                    className="w-full rounded bg-[#27a8df] px-3 py-2 text-[13px] font-bold text-white hover:bg-[#0584c0] transition-colors"
+                    className="w-full md:w-auto rounded-md bg-[#27a8df] px-3.5 py-2 text-[13px] font-bold text-white hover:bg-[#0584c0] transition-colors shadow-xs"
                   >
                     Cek Resep
                   </button>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))
           )}
         </div>
 
-        {/* Footnote */}
-        <div className="bg-white px-4 sm:px-5 py-3 text-[13px] sm:text-[14px] text-gray-500">
+        {/* Footnote Container */}
+        <div className="border-t border-gray-200 bg-gray-50 px-4 sm:px-5 py-3 text-[13px] sm:text-[14px] text-gray-500">
           <p>
-            Klik pada loket pelayanan untuk mengecek status pemrosesan resep
-            obat Anda
+            Klik tombol Cek Resep pada masing-masing kartu untuk mengecek status pemrosesan resep obat Anda.
           </p>
           <p>Antrian online ini diperbaharui otomatis setiap 60 detik.</p>
         </div>
       </div>
 
       {/* ================================================================
-          NOTICE ALERT
+          4. NOTICE ALERT CONTAINER CARD
           ================================================================ */}
-      <div className="mt-4 sm:mt-6 text-[13px] sm:text-[15px] font-extrabold leading-relaxed">
-        <span className="font-black text-red-500">PERHATIAN :</span>{' '}
+      <div className="rounded-lg border-l-4 border-l-red-500 border border-gray-200 bg-red-50/60 p-4 shadow-xs text-[13px] sm:text-[15px] font-extrabold leading-relaxed text-gray-800">
+        <span className="font-black text-red-600">PERHATIAN :</span>{' '}
         HARAP MEMPERHATIKAN NAMA DAN NOMOR RESEP SAAT DIPANGGIL DI LOKET
         FARMASI. PASTIKAN MEMBAWA STRUK REKAPAN APOTEK.
       </div>
@@ -582,6 +515,6 @@ export default function AntrianFarmasi() {
         onClose={() => setTicketModalOpen(false)}
         farmasiData={farmasiData}
       />
-    </section>
+    </div>
   );
 }
