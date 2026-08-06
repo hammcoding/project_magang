@@ -257,9 +257,9 @@ function TicketModal({
 
                 {/* Sisa Antrian Pill */}
                 <div className="pt-2">
-                  <span className="block text-[11px] font-extrabold tracking-wider text-gray-500 uppercase mb-1">
-                    SISA ANTRIAN
-                  </span>
+                  <h4 className="text-base font-extrabold text-[#1B2A4A] mb-1">
+                    Sisa Antrian
+                  </h4>
                   <div className="w-full rounded-full bg-[#B7E0F7] py-2 text-center text-lg font-black text-[#152B4D]">
                     {remainingCount}
                   </div>
