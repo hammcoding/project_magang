@@ -11,10 +11,11 @@ interface FarmasiItem {
   counterName: string;
   catName: string;
   currentNum: string;
-  patientName: string;
   status: 'ready' | 'preparing';
   statusText: string;
   estTime: string;
+  orderTime: string;
+  processTime: string;
 }
 
 // ============================================================================
@@ -27,10 +28,11 @@ const initialFarmasiData: FarmasiItem[] = [
     counterName: 'Loket 1 - Obat Jadi (Non-Racik)',
     catName: 'Resep Non-Racikan',
     currentNum: 'F-042',
-    patientName: 'Ibu Suryani',
     status: 'ready',
     statusText: 'Siap Diambil',
     estTime: 'Siap Sekarang',
+    orderTime: '06-08-2026 07:15 WIB',
+    processTime: '06-08-2026 08:30 WIB',
   },
   {
     id: 'far-2',
@@ -38,10 +40,11 @@ const initialFarmasiData: FarmasiItem[] = [
     counterName: 'Loket 2 - Racikan Khusus',
     catName: 'Resep Racikan',
     currentNum: 'R-018',
-    patientName: 'Bp. Bambang Purwanto',
     status: 'preparing',
     statusText: 'Proses Penyiapan Obat',
     estTime: '~ 10-15 Menit',
+    orderTime: '06-08-2026 08:05 WIB',
+    processTime: '06-08-2026 09:45 WIB',
   },
   {
     id: 'far-3',
@@ -49,10 +52,11 @@ const initialFarmasiData: FarmasiItem[] = [
     counterName: 'Loket 3 - BPJS Rawat Jalan',
     catName: 'Farmasi BPJS Kesehatan',
     currentNum: 'B-105',
-    patientName: 'Ibu Siti Rahayu',
     status: 'ready',
     statusText: 'Siap Diambil',
     estTime: 'Siap Sekarang',
+    orderTime: '06-08-2026 06:50 WIB',
+    processTime: '06-08-2026 08:10 WIB',
   },
   {
     id: 'far-4',
@@ -60,10 +64,11 @@ const initialFarmasiData: FarmasiItem[] = [
     counterName: 'Loket 4 - Pasien Umum & Asuransi',
     catName: 'Farmasi Umum',
     currentNum: 'U-022',
-    patientName: 'Sdr. Kevin Pratama',
     status: 'ready',
     statusText: 'Siap Diambil',
     estTime: 'Siap Sekarang',
+    orderTime: '06-08-2026 07:40 WIB',
+    processTime: '06-08-2026 08:55 WIB',
   },
 ];
 
@@ -133,10 +138,6 @@ function TicketModal({
 
             <div className="space-y-2 text-gray-800 text-[14px]">
               <p className="flex justify-between border-b border-gray-100 pb-1.5">
-                <span className="text-gray-500 font-medium">Nama Pasien:</span>
-                <strong className="text-[#004A99]">{match.patientName}</strong>
-              </p>
-              <p className="flex justify-between border-b border-gray-100 pb-1.5">
                 <span className="text-gray-500 font-medium">Loket Pelayanan:</span>
                 <span className="font-bold">{match.counterName}</span>
               </p>
@@ -148,10 +149,24 @@ function TicketModal({
                 <span className="text-gray-500 font-medium">Status Pengerjaan:</span>
                 <span className="font-bold text-green-700">{match.statusText}</span>
               </p>
+              <p className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="text-gray-500 font-medium">Waktu Order:</span>
+                <span className="font-bold text-[#004A99]">
+                  <i className="fa-regular fa-calendar text-[#0584c0] mr-1"></i>
+                  {match.orderTime}
+                </span>
+              </p>
+              <p className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="text-gray-500 font-medium">Waktu Proses:</span>
+                <span className="font-bold text-[#004A99]">
+                  <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
+                  {match.processTime}
+                </span>
+              </p>
               <p className="flex justify-between">
                 <span className="text-gray-500 font-medium">Estimasi Pengambilan:</span>
                 <span className="font-bold text-[#004A99]">
-                  <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
+                  <i className="fa-solid fa-hourglass-half text-[#0584c0] mr-1"></i>
                   {match.estTime}
                 </span>
               </p>
@@ -201,7 +216,7 @@ function TicketModal({
       }}
     >
       <div className="w-full max-w-[620px] max-h-[90vh] overflow-y-auto overflow-hidden rounded-lg bg-white shadow-2xl">
-        {/* Header Container */}
+        {/* Header */}
         <div className="flex items-center justify-between bg-[#004A99] px-4 sm:px-5 py-3 sm:py-4 text-white">
           <div>
             <h3 className="text-base sm:text-lg font-bold">
@@ -219,7 +234,7 @@ function TicketModal({
           </button>
         </div>
 
-        {/* Body Container */}
+        {/* Body */}
         <div className="p-4 sm:p-5">
           <div className="mb-4 flex flex-col sm:flex-row gap-2.5">
             <input
@@ -243,7 +258,7 @@ function TicketModal({
           {searchResult && <div>{searchResult}</div>}
         </div>
 
-        {/* Footer Container */}
+        {/* Footer */}
         <div className="border-t border-gray-200 bg-gray-50 px-4 sm:px-5 py-3 flex justify-end">
           <button
             onClick={onClose}
@@ -268,10 +283,7 @@ export default function AntrianFarmasi() {
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
   const [prefilledTicket, setPrefilledTicket] = useState('');
 
-  // Summary stats
-  const statPreparing = 12;
-  const statReady = 8;
-  const statDone = 64;
+
 
   // Auto-refresh countdown timer
   useEffect(() => {
@@ -295,8 +307,7 @@ export default function AntrianFarmasi() {
       !q ||
       item.counterName.toLowerCase().includes(q) ||
       item.catName.toLowerCase().includes(q) ||
-      item.currentNum.toLowerCase().includes(q) ||
-      item.patientName.toLowerCase().includes(q);
+      item.currentNum.toLowerCase().includes(q);
     return matchesCat && matchesSearch;
   });
 
@@ -308,46 +319,7 @@ export default function AntrianFarmasi() {
 
   return (
     <div className="w-full flex flex-col gap-6">
-      {/* ================================================================
-          1. PHARMACY SUMMARY COUNTER WIDGET CONTAINERS
-          ================================================================ */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-        {/* Sedang Penyiapan */}
-        <div className="flex items-center rounded-lg border border-gray-200 border-l-4 border-l-amber-600 bg-white px-4 sm:px-6 py-4 shadow-sm">
-          <div>
-            <span className="block text-2xl sm:text-3xl font-extrabold leading-tight text-[#004A99]">
-              {statPreparing}
-            </span>
-            <span className="text-xs sm:text-sm font-semibold text-gray-500">
-              Sedang Penyiapan / Diracik
-            </span>
-          </div>
-        </div>
 
-        {/* Siap Diambil */}
-        <div className="flex items-center rounded-lg border border-gray-200 border-l-4 border-l-green-600 bg-white px-4 sm:px-6 py-4 shadow-sm">
-          <div>
-            <span className="block text-2xl sm:text-3xl font-extrabold leading-tight text-[#004A99]">
-              {statReady}
-            </span>
-            <span className="text-xs sm:text-sm font-semibold text-gray-500">
-              Siap Diambil di Loket
-            </span>
-          </div>
-        </div>
-
-        {/* Resep Selesai */}
-        <div className="flex items-center rounded-lg border border-gray-200 border-l-4 border-l-[#004A99] bg-white px-4 sm:px-6 py-4 shadow-sm">
-          <div>
-            <span className="block text-2xl sm:text-3xl font-extrabold leading-tight text-[#004A99]">
-              {statDone}
-            </span>
-            <span className="text-xs sm:text-sm font-semibold text-gray-500">
-              Resep Selesai Hari Ini
-            </span>
-          </div>
-        </div>
-      </div>
 
       {/* ================================================================
           2. FILTER PANEL CONTAINER CARD
@@ -386,7 +358,7 @@ export default function AntrianFarmasi() {
               htmlFor="farmasiSearchInput"
               className="text-sm font-semibold text-gray-900"
             >
-              Cari No. Resep / Nama Pasien
+              Cari No. Resep
             </label>
             <div className="relative flex items-center">
               <svg
@@ -408,7 +380,7 @@ export default function AntrianFarmasi() {
                 id="farmasiSearchInput"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Ketik No. Tiket atau Nama Pasien..."
+                placeholder="Ketik No. Tiket resep..."
                 autoComplete="off"
                 className="w-full rounded-md border border-gray-300 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#0584c0] focus:ring-1 focus:ring-[#0584c0]"
               />
@@ -422,7 +394,7 @@ export default function AntrianFarmasi() {
                 setPrefilledTicket('');
                 setTicketModalOpen(true);
               }}
-              className="inline-flex items-center gap-2 rounded-md bg-[#daa732] px-4 py-2.5 text-sm font-bold text-gray-900 hover:bg-[#c49427] transition-colors w-full sm:w-auto justify-center shadow-xs"
+              className="inline-flex items-center gap-2 rounded-md bg-[#27a8df] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#0584c0] transition-colors w-full sm:w-auto justify-center shadow-xs"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -445,11 +417,11 @@ export default function AntrianFarmasi() {
       </div>
 
       {/* ================================================================
-          3. PHARMACY QUEUE MONITOR CONTAINER CARDS LIST (BOXED CONTAINER TABLE)
+          3. PHARMACY QUEUE MONITOR CONTAINER CARDS LIST
           ================================================================ */}
       <div className="rounded-xl border border-[#0584c0] bg-white shadow-sm overflow-hidden">
-        {/* Banner Header Container */}
-        <div className="bg-[#058446] px-4 sm:px-6 py-4 text-center text-white">
+        {/* Banner Header - Solid Blue */}
+        <div className="bg-[#004A99] px-4 sm:px-6 py-4 text-center text-white">
           <h2 className="m-0 text-[17px] sm:text-[20px] font-bold tracking-wide">
             Antrian Pelayanan Instalasi Farmasi
           </h2>
@@ -457,13 +429,13 @@ export default function AntrianFarmasi() {
 
         {/* Container Cards Wrapper */}
         <div className="p-4 sm:p-5 flex flex-col gap-3 bg-[#F8FAFC]">
-          {/* Header Legend Card Container (Desktop) */}
-          <div className="hidden md:grid grid-cols-12 gap-4 rounded-lg bg-[#0584c0] px-5 py-3.5 text-white font-semibold text-[14px]">
+          {/* Header Legend - White with thin blue top border */}
+          <div className="hidden md:grid grid-cols-12 gap-4 rounded-lg border-t-2 border-t-[#004A99] border border-gray-200 bg-white px-5 py-3 text-[#004A99] font-bold text-[14px] shadow-xs">
             <div className="col-span-3">Loket Pelayanan</div>
             <div className="col-span-2">Kategori Resep</div>
-            <div className="col-span-2 text-center">Nomor Antrian Dipanggil</div>
-            <div className="col-span-2">Nama Pasien</div>
-            <div className="col-span-2 text-center">Status &amp; Estimasi</div>
+            <div className="col-span-2 text-center">No. Antrian</div>
+            <div className="col-span-2 text-center whitespace-nowrap">Waktu Order</div>
+            <div className="col-span-2 text-center whitespace-nowrap">Waktu Proses</div>
             <div className="col-span-1 text-center">Aksi</div>
           </div>
 
@@ -498,18 +470,21 @@ export default function AntrianFarmasi() {
                   </span>
                 </div>
 
-                {/* Patient Name */}
-                <div className="md:col-span-2 w-full text-[14px] sm:text-[15px] font-bold text-gray-800">
-                  <i className="fa-solid fa-user text-[#0584c0] mr-1.5 md:hidden"></i>
-                  {item.patientName}
+                {/* Waktu Order */}
+                <div className="md:col-span-2 w-full flex items-center justify-between md:justify-center">
+                  <span className="text-[12px] font-semibold text-gray-500 md:hidden">Waktu Order:</span>
+                  <span className="text-[12px] sm:text-[13px] font-semibold text-gray-700 whitespace-nowrap">
+                    <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
+                    {item.orderTime}
+                  </span>
                 </div>
 
-                {/* Status & Estimasi */}
-                <div className="md:col-span-2 w-full flex flex-col items-start md:items-center gap-1">
-                  <FarmasiStatusBadge status={item.status} />
-                  <span className="text-[12px] text-gray-500">
+                {/* Waktu Proses */}
+                <div className="md:col-span-2 w-full flex items-center justify-between md:justify-center">
+                  <span className="text-[12px] font-semibold text-gray-500 md:hidden">Waktu Proses:</span>
+                  <span className="text-[12px] sm:text-[13px] font-semibold text-gray-700 whitespace-nowrap">
                     <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
-                    {item.estTime}
+                    {item.processTime}
                   </span>
                 </div>
 
@@ -525,14 +500,6 @@ export default function AntrianFarmasi() {
               </div>
             ))
           )}
-        </div>
-
-        {/* Footnote Container */}
-        <div className="border-t border-gray-200 bg-gray-50 px-4 sm:px-5 py-3 text-[13px] sm:text-[14px] text-gray-500">
-          <p>
-            Klik tombol Cek Resep pada masing-masing kartu untuk mengecek status pemrosesan resep obat Anda.
-          </p>
-          <p>Antrian online ini diperbaharui otomatis setiap 60 detik.</p>
         </div>
       </div>
 
