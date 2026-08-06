@@ -16,6 +16,8 @@ interface FarmasiItem {
   estTime: string;
   orderTime: string;
   processTime: string;
+  totalQueue: number;
+  currentSeq: number;
 }
 
 // ============================================================================
@@ -27,12 +29,14 @@ const initialFarmasiData: FarmasiItem[] = [
     code: 'non-racik',
     counterName: 'Loket 1 - Obat Jadi (Non-Racik)',
     catName: 'Resep Non-Racikan',
-    currentNum: 'F-042',
+    currentNum: 'F-020',
     status: 'ready',
     statusText: 'Siap Diambil',
-    estTime: 'Siap Sekarang',
-    orderTime: '06-08-2026 07:15 WIB',
-    processTime: '06-08-2026 08:30 WIB',
+    estTime: '09:35 , 04-10-2026',
+    orderTime: '09:30 , 04-10-2026',
+    processTime: '09:33 , 04-10-2026',
+    totalQueue: 28,
+    currentSeq: 20,
   },
   {
     id: 'far-2',
@@ -42,9 +46,11 @@ const initialFarmasiData: FarmasiItem[] = [
     currentNum: 'R-018',
     status: 'preparing',
     statusText: 'Proses Penyiapan Obat',
-    estTime: '~ 10-15 Menit',
-    orderTime: '06-08-2026 08:05 WIB',
-    processTime: '06-08-2026 09:45 WIB',
+    estTime: '09:45 , 04-10-2026',
+    orderTime: '09:15 , 04-10-2026',
+    processTime: '09:30 , 04-10-2026',
+    totalQueue: 30,
+    currentSeq: 18,
   },
   {
     id: 'far-3',
@@ -54,9 +60,11 @@ const initialFarmasiData: FarmasiItem[] = [
     currentNum: 'B-105',
     status: 'ready',
     statusText: 'Siap Diambil',
-    estTime: 'Siap Sekarang',
-    orderTime: '06-08-2026 06:50 WIB',
-    processTime: '06-08-2026 08:10 WIB',
+    estTime: '08:40 , 04-10-2026',
+    orderTime: '08:15 , 04-10-2026',
+    processTime: '08:30 , 04-10-2026',
+    totalQueue: 115,
+    currentSeq: 105,
   },
   {
     id: 'far-4',
@@ -66,32 +74,16 @@ const initialFarmasiData: FarmasiItem[] = [
     currentNum: 'U-022',
     status: 'ready',
     statusText: 'Siap Diambil',
-    estTime: 'Siap Sekarang',
-    orderTime: '06-08-2026 07:40 WIB',
-    processTime: '06-08-2026 08:55 WIB',
+    estTime: '09:15 , 04-10-2026',
+    orderTime: '08:50 , 04-10-2026',
+    processTime: '09:05 , 04-10-2026',
+    totalQueue: 27,
+    currentSeq: 22,
   },
 ];
 
 // ============================================================================
-// STATUS BADGE COMPONENT
-// ============================================================================
-function FarmasiStatusBadge({ status }: { status: string }) {
-  if (status === 'ready') {
-    return (
-      <span className="inline-block rounded px-2.5 py-1 text-xs font-bold border border-green-300 bg-green-50 text-green-800">
-        Siap Diambil
-      </span>
-    );
-  }
-  return (
-    <span className="inline-block rounded px-2.5 py-1 text-xs font-bold border border-yellow-300 bg-yellow-50 text-yellow-800">
-      Proses Penyiapan
-    </span>
-  );
-}
-
-// ============================================================================
-// TICKET CHECK MODAL COMPONENT
+// TICKET CHECK MODAL COMPONENT (MATCHING EXACT USER SCREENSHOT DESIGN 2)
 // ============================================================================
 function TicketModal({
   isOpen,
@@ -105,92 +97,34 @@ function TicketModal({
   farmasiData: FarmasiItem[];
 }) {
   const [ticketInput, setTicketInput] = useState('');
-  const [searchResult, setSearchResult] = useState<React.ReactNode | null>(
-    null
-  );
+  const [matchedItem, setMatchedItem] = useState<FarmasiItem | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const performSearch = useCallback(
     (code: string) => {
-      const searchCode = code.toUpperCase().trim();
-      if (!searchCode) {
-        setSearchResult(
-          <div className="rounded p-2.5 text-red-500 font-semibold text-sm">
-            Masukkan nomor resep Anda.
-          </div>
-        );
+      const rawCode = code.trim().toUpperCase();
+      setHasSearched(true);
+
+      if (!rawCode) {
+        setMatchedItem(null);
         return;
       }
 
-      const match = farmasiData.find(
-        (f) => f.currentNum.toUpperCase() === searchCode
-      );
+      // Try exact match or partial match (e.g. F-20 matching F-020)
+      const match = farmasiData.find((f) => {
+        const itemNum = f.currentNum.toUpperCase();
+        if (itemNum === rawCode) return true;
+        // Normalize single digit e.g. F-20 vs F-020
+        const normalizedInput = rawCode.replace(/([A-Z])-?0*(\d+)/, '$1-$2');
+        const normalizedItem = itemNum.replace(/([A-Z])-?0*(\d+)/, '$1-$2');
+        return normalizedInput === normalizedItem;
+      });
 
-      if (match) {
-        setSearchResult(
-          <div className="rounded-lg border-l-4 border-[#004A99] border border-gray-200 bg-gray-50 p-4 text-sm">
-            <div className="flex items-center justify-between mb-3 border-b border-gray-200 pb-2">
-              <h4 className="font-bold text-[#004A99] text-base sm:text-lg">
-                <i className="fa-solid fa-receipt text-[#0584c0] mr-2"></i>
-                Resep No. {match.currentNum}
-              </h4>
-              <FarmasiStatusBadge status={match.status} />
-            </div>
-
-            <div className="space-y-2 text-gray-800 text-[14px]">
-              <p className="flex justify-between border-b border-gray-100 pb-1.5">
-                <span className="text-gray-500 font-medium">Loket Pelayanan:</span>
-                <span className="font-bold">{match.counterName}</span>
-              </p>
-              <p className="flex justify-between border-b border-gray-100 pb-1.5">
-                <span className="text-gray-500 font-medium">Kategori Resep:</span>
-                <span className="font-semibold text-[#0584c0]">{match.catName}</span>
-              </p>
-              <p className="flex justify-between border-b border-gray-100 pb-1.5">
-                <span className="text-gray-500 font-medium">Status Pengerjaan:</span>
-                <span className="font-bold text-green-700">{match.statusText}</span>
-              </p>
-              <p className="flex justify-between border-b border-gray-100 pb-1.5">
-                <span className="text-gray-500 font-medium">Waktu Order:</span>
-                <span className="font-bold text-[#004A99]">
-                  <i className="fa-regular fa-calendar text-[#0584c0] mr-1"></i>
-                  {match.orderTime}
-                </span>
-              </p>
-              <p className="flex justify-between border-b border-gray-100 pb-1.5">
-                <span className="text-gray-500 font-medium">Waktu Proses:</span>
-                <span className="font-bold text-[#004A99]">
-                  <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
-                  {match.processTime}
-                </span>
-              </p>
-              <p className="flex justify-between">
-                <span className="text-gray-500 font-medium">Estimasi Pengambilan:</span>
-                <span className="font-bold text-[#004A99]">
-                  <i className="fa-solid fa-hourglass-half text-[#0584c0] mr-1"></i>
-                  {match.estTime}
-                </span>
-              </p>
-            </div>
-          </div>
-        );
-      } else {
-        setSearchResult(
-          <div className="rounded-lg border-l-4 border-yellow-500 border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-900">
-            <p className="font-bold mb-1">
-              <i className="fa-solid fa-circle-info text-yellow-600 mr-1.5"></i>
-              Informasi Resep
-            </p>
-            <p>
-              Nomor Tiket &quot;<strong>{searchCode}</strong>&quot; sedang dalam proses persiapan di apotek. Silakan menunggu pemanggilan di lokasi.
-            </p>
-          </div>
-        );
-      }
+      setMatchedItem(match || null);
     },
     [farmasiData]
   );
 
-  // Auto search when prefilledTicket is passed on open
   useEffect(() => {
     if (isOpen) {
       if (prefilledTicket) {
@@ -198,73 +132,150 @@ function TicketModal({
         performSearch(prefilledTicket);
       } else {
         setTicketInput('');
-        setSearchResult(null);
+        setMatchedItem(null);
+        setHasSearched(false);
       }
     } else {
       setTicketInput('');
-      setSearchResult(null);
+      setMatchedItem(null);
+      setHasSearched(false);
     }
   }, [isOpen, prefilledTicket, performSearch]);
 
   if (!isOpen) return null;
 
+  const currentItem = matchedItem;
+  const remainingCount = currentItem
+    ? Math.max(0, currentItem.totalQueue - currentItem.currentSeq)
+    : 8;
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 p-3 sm:p-5"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 sm:p-6"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-[620px] max-h-[90vh] overflow-y-auto overflow-hidden rounded-lg bg-white shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between bg-[#004A99] px-4 sm:px-5 py-3 sm:py-4 text-white">
-          <div>
-            <h3 className="text-base sm:text-lg font-bold">
-              Cek Status Resep Obat Farmasi
-            </h3>
-            <span className="text-xs text-blue-200">
-              Pelayanan Instalasi Farmasi RSU Mitra Siaga
-            </span>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-2xl text-white hover:text-gray-300"
-          >
-            &times;
-          </button>
+      <div className="w-full max-w-[540px] overflow-hidden rounded-[28px] bg-white shadow-2xl transition-all">
+        {/* Top Header Section */}
+        <div className="p-6 pb-4 text-center">
+          <h3 className="text-xl sm:text-2xl font-extrabold text-[#1B2A4A]">
+            Cek Status Resep Obat Farmasi
+          </h3>
+          <p className="mt-1 text-xs sm:text-sm font-semibold text-gray-400">
+            Pelayanan Instalasi Farmasi RS Mitra Siaga
+          </p>
         </div>
 
-        {/* Body */}
-        <div className="p-4 sm:p-5">
-          <div className="mb-4 flex flex-col sm:flex-row gap-2.5">
-            <input
-              type="text"
-              value={ticketInput}
-              onChange={(e) => setTicketInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') performSearch(ticketInput);
-              }}
-              placeholder="Masukkan Kode Resep (misal: R-018 atau F-042)"
-              autoComplete="off"
-              className="flex-1 rounded-md border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#0584c0] focus:ring-1 focus:ring-[#0584c0]"
-            />
-            <button
-              onClick={() => performSearch(ticketInput)}
-              className="flex items-center justify-center gap-1.5 rounded-md bg-[#0584c0] px-4 py-2.5 font-bold text-white hover:bg-[#004A99] transition-colors text-sm"
-            >
-              <i className="fa-solid fa-magnifying-glass"></i> Cek Tiket
-            </button>
-          </div>
-          {searchResult && <div>{searchResult}</div>}
+        <div className="h-[1px] w-full bg-gray-100"></div>
+
+        {/* Modal Body */}
+        <div className="p-6">
+          {/* Search Bar Input (Shown when opened from top button or to re-search) */}
+          {!prefilledTicket && (
+            <div className="mb-5 flex flex-col sm:flex-row gap-2.5">
+              <input
+                type="text"
+                value={ticketInput}
+                onChange={(e) => setTicketInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') performSearch(ticketInput);
+                }}
+                placeholder="Masukkan Nomor Antrian (misal: F-20, R-18, B-105)"
+                autoComplete="off"
+                className="flex-1 rounded-xl border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-800 outline-none focus:border-[#0584c0] focus:ring-2 focus:ring-[#0584c0]/20"
+              />
+              <button
+                onClick={() => performSearch(ticketInput)}
+                className="flex items-center justify-center gap-1.5 rounded-xl bg-[#27a8df] px-5 py-2.5 text-sm font-extrabold text-white hover:bg-[#0584c0] transition-colors"
+              >
+                <i className="fa-solid fa-magnifying-glass"></i> Cek Tiket
+              </button>
+            </div>
+          )}
+
+          {/* Initial Prompt (when opened via top button before user searches) */}
+          {!prefilledTicket && !hasSearched && (
+            <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-blue-100 bg-[#F0F7FC] p-6 text-center shadow-xs">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#B7E0F7] text-[#27a8df]">
+                <i className="fa-solid fa-circle-info text-2xl"></i>
+              </div>
+              <p className="max-w-[420px] text-sm font-semibold leading-relaxed text-[#152B4D]">
+                Masukkan nomor antrian atau resep obat Anda pada kolom di atas, lalu klik tombol <strong className="text-[#0584c0]">Cek Tiket</strong> untuk melihat status pemrosesan.
+              </p>
+            </div>
+          )}
+
+          {/* Not Found Alert (when user searches a number that does not exist) */}
+          {!prefilledTicket && hasSearched && !matchedItem && (
+            <div className="flex flex-col items-center justify-center gap-2.5 rounded-2xl border border-red-200 bg-red-50/70 p-6 text-center shadow-xs">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-500">
+                <i className="fa-solid fa-triangle-exclamation text-2xl"></i>
+              </div>
+              <h4 className="text-base font-extrabold text-red-700">
+                Nomor Antrian Tidak Ditemukan
+              </h4>
+              <p className="max-w-[400px] text-xs sm:text-sm font-semibold leading-relaxed text-gray-700">
+                Nomor antrian &quot;<strong className="text-red-600">{ticketInput}</strong>&quot; tidak ada dalam sistem antrian farmasi saat ini. Silakan periksa kembali nomor yang tertera pada struk Anda.
+              </p>
+            </div>
+          )}
+
+          {/* Result Card (Image 2 Design: shown when searched or prefilled from table row) */}
+          {(prefilledTicket || hasSearched) && currentItem && (
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-12 items-center">
+              {/* Left Light Blue Card */}
+              <div className="sm:col-span-5 flex flex-col items-center justify-center rounded-2xl bg-[#B7E0F7] p-6 text-center shadow-xs">
+                <span className="mb-2 text-xs font-bold text-[#1F5582]">
+                  No. Antrian Sekarang
+                </span>
+                <span className="text-4xl font-black text-[#152B4D]">
+                  {currentItem.currentNum}
+                </span>
+              </div>
+
+              {/* Right Order Details */}
+              <div className="sm:col-span-7 flex flex-col justify-center space-y-2">
+                <h4 className="text-base font-extrabold text-[#1B2A4A] mb-1">
+                  Detail Order
+                </h4>
+
+                <div className="space-y-1.5 text-xs sm:text-sm font-semibold text-[#152B4D]">
+                  <div className="flex justify-between">
+                    <span className="text-gray-700 font-medium">Waktu Order</span>
+                    <span className="font-bold">: {currentItem.orderTime}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-700 font-medium">Waktu Proses</span>
+                    <span className="font-bold">: {currentItem.processTime}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-700 font-medium">Estimasi Waktu</span>
+                    <span className="font-bold">: {currentItem.estTime}</span>
+                  </div>
+                </div>
+
+                {/* Sisa Antrian Pill */}
+                <div className="pt-2">
+                  <span className="block text-[11px] font-extrabold tracking-wider text-gray-500 uppercase mb-1">
+                    SISA ANTRIAN
+                  </span>
+                  <div className="w-full rounded-full bg-[#B7E0F7] py-2 text-center text-lg font-black text-[#152B4D]">
+                    {remainingCount}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Footer */}
-        <div className="border-t border-gray-200 bg-gray-50 px-4 sm:px-5 py-3 flex justify-end">
+        {/* Bottom Red Kembali Button */}
+        <div className="flex justify-center pb-6 pt-1">
           <button
             onClick={onClose}
-            className="rounded-md bg-gray-400 px-4 py-2 text-sm font-bold text-white hover:bg-gray-500 transition-colors"
+            className="rounded-full bg-[#DC4B3E] px-10 py-2.5 text-sm font-extrabold tracking-wider text-white shadow-md hover:bg-[#c83b2e] transition-colors"
           >
-            Tutup
+            KEMBALI
           </button>
         </div>
       </div>
@@ -279,24 +290,8 @@ export default function AntrianFarmasi() {
   const [farmasiData] = useState<FarmasiItem[]>(initialFarmasiData);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [countdown, setCountdown] = useState(60);
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
   const [prefilledTicket, setPrefilledTicket] = useState('');
-
-
-
-  // Auto-refresh countdown timer
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          return 60;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   // Filter data
   const filteredData = farmasiData.filter((item) => {
@@ -319,10 +314,8 @@ export default function AntrianFarmasi() {
 
   return (
     <div className="w-full flex flex-col gap-6">
-
-
       {/* ================================================================
-          2. FILTER PANEL CONTAINER CARD
+          1. FILTER PANEL CONTAINER CARD
           ================================================================ */}
       <div className="rounded-lg border border-[#0584c0]/30 bg-white p-4 sm:p-5 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-3 sm:gap-5">
@@ -358,7 +351,7 @@ export default function AntrianFarmasi() {
               htmlFor="farmasiSearchInput"
               className="text-sm font-semibold text-gray-900"
             >
-              Cari No. Resep
+              Cari No. Antrian
             </label>
             <div className="relative flex items-center">
               <svg
@@ -380,7 +373,7 @@ export default function AntrianFarmasi() {
                 id="farmasiSearchInput"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Ketik No. Tiket resep..."
+                placeholder="Ketik No. Tiket antrian..."
                 autoComplete="off"
                 className="w-full rounded-md border border-gray-300 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-[#0584c0] focus:ring-1 focus:ring-[#0584c0]"
               />
@@ -407,7 +400,7 @@ export default function AntrianFarmasi() {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                 />
               </svg>
               Cek Status Resep
@@ -417,7 +410,7 @@ export default function AntrianFarmasi() {
       </div>
 
       {/* ================================================================
-          3. PHARMACY QUEUE MONITOR CONTAINER CARDS LIST
+          2. PHARMACY QUEUE MONITOR CONTAINER CARDS LIST
           ================================================================ */}
       <div className="rounded-xl border border-[#0584c0] bg-white shadow-sm overflow-hidden">
         {/* Banner Header - Solid Blue */}
@@ -431,12 +424,10 @@ export default function AntrianFarmasi() {
         <div className="p-4 sm:p-5 flex flex-col gap-3 bg-[#F8FAFC]">
           {/* Header Legend - White with thin blue top border */}
           <div className="hidden md:grid grid-cols-12 gap-4 rounded-lg border-t-2 border-t-[#004A99] border border-gray-200 bg-white px-5 py-3 text-[#004A99] font-bold text-[14px] shadow-xs">
-            <div className="col-span-3">Loket Pelayanan</div>
-            <div className="col-span-2">Kategori Resep</div>
+            <div className="col-span-5">Loket Pelayanan</div>
+            <div className="col-span-3">Kategori Resep</div>
             <div className="col-span-2 text-center">No. Antrian</div>
-            <div className="col-span-2 text-center whitespace-nowrap">Waktu Order</div>
-            <div className="col-span-2 text-center whitespace-nowrap">Waktu Proses</div>
-            <div className="col-span-1 text-center">Aksi</div>
+            <div className="col-span-2 text-center">Aksi</div>
           </div>
 
           {/* Individual Queue Item Container Cards */}
@@ -451,14 +442,14 @@ export default function AntrianFarmasi() {
                 className="rounded-lg border border-gray-200 bg-white p-4 sm:p-5 shadow-xs hover:border-[#0584c0] hover:shadow-md transition-all duration-200 flex flex-col md:grid md:grid-cols-12 gap-3 md:gap-4 items-start md:items-center"
               >
                 {/* Counter Name */}
-                <div className="md:col-span-3 w-full">
+                <div className="md:col-span-5 w-full">
                   <strong className="block text-[15px] font-bold text-gray-900">
                     {item.counterName}
                   </strong>
                 </div>
 
                 {/* Category */}
-                <div className="md:col-span-2 w-full text-[13px] font-semibold text-[#0584c0]">
+                <div className="md:col-span-3 w-full text-[13px] font-semibold text-[#0584c0]">
                   {item.catName}
                 </div>
 
@@ -470,29 +461,11 @@ export default function AntrianFarmasi() {
                   </span>
                 </div>
 
-                {/* Waktu Order */}
-                <div className="md:col-span-2 w-full flex items-center justify-between md:justify-center">
-                  <span className="text-[12px] font-semibold text-gray-500 md:hidden">Waktu Order:</span>
-                  <span className="text-[12px] sm:text-[13px] font-semibold text-gray-700 whitespace-nowrap">
-                    <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
-                    {item.orderTime}
-                  </span>
-                </div>
-
-                {/* Waktu Proses */}
-                <div className="md:col-span-2 w-full flex items-center justify-between md:justify-center">
-                  <span className="text-[12px] font-semibold text-gray-500 md:hidden">Waktu Proses:</span>
-                  <span className="text-[12px] sm:text-[13px] font-semibold text-gray-700 whitespace-nowrap">
-                    <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
-                    {item.processTime}
-                  </span>
-                </div>
-
                 {/* Action Button */}
-                <div className="md:col-span-1 w-full flex justify-end md:justify-center pt-2 md:pt-0 border-t md:border-0 border-gray-100">
+                <div className="md:col-span-2 w-full flex justify-end md:justify-center pt-2 md:pt-0 border-t md:border-0 border-gray-100">
                   <button
                     onClick={() => openTicketWithNumber(item.currentNum)}
-                    className="w-full md:w-auto rounded-md bg-[#27a8df] px-3.5 py-2 text-[13px] font-bold text-white hover:bg-[#0584c0] transition-colors shadow-xs"
+                    className="w-full md:w-auto rounded-md bg-[#27a8df] px-4 py-2 text-[13px] font-bold text-white hover:bg-[#0584c0] transition-colors shadow-xs"
                   >
                     Cek Resep
                   </button>
@@ -504,7 +477,7 @@ export default function AntrianFarmasi() {
       </div>
 
       {/* ================================================================
-          4. NOTICE ALERT CONTAINER CARD
+          3. NOTICE ALERT CONTAINER CARD
           ================================================================ */}
       <div className="rounded-lg border-l-4 border-l-red-500 border border-gray-200 bg-red-50/60 p-4 shadow-xs text-[13px] sm:text-[15px] font-extrabold leading-relaxed text-gray-800">
         <span className="font-black text-red-600">PERHATIAN :</span>{' '}

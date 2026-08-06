@@ -16,13 +16,11 @@ interface PoliklinikItem {
   prefix: string;
   currentSeq: number;
   totalQueue: number;
-  orderTime: string;
-  processTime: string;
 }
 
 interface DetailModalData {
   item: PoliklinikItem;
-  waitingList: { num: string }[];
+  waitingList: { num: string; status: string; time: string }[];
   remaining: number;
 }
 
@@ -41,8 +39,6 @@ const initialPoliklinikData: PoliklinikItem[] = [
     prefix: 'M',
     currentSeq: 14,
     totalQueue: 22,
-    orderTime: '06-08-2026 07:12 WIB',
-    processTime: '06-08-2026 09:45 WIB',
   },
   {
     id: 'poli-2',
@@ -55,8 +51,6 @@ const initialPoliklinikData: PoliklinikItem[] = [
     prefix: 'D',
     currentSeq: 28,
     totalQueue: 35,
-    orderTime: '06-08-2026 06:58 WIB',
-    processTime: '06-08-2026 10:20 WIB',
   },
   {
     id: 'poli-3',
@@ -69,8 +63,6 @@ const initialPoliklinikData: PoliklinikItem[] = [
     prefix: 'A',
     currentSeq: 19,
     totalQueue: 25,
-    orderTime: '06-08-2026 07:30 WIB',
-    processTime: '06-08-2026 10:05 WIB',
   },
   {
     id: 'poli-4',
@@ -83,8 +75,6 @@ const initialPoliklinikData: PoliklinikItem[] = [
     prefix: 'S',
     currentSeq: 8,
     totalQueue: 14,
-    orderTime: '06-08-2026 07:45 WIB',
-    processTime: '06-08-2026 09:15 WIB',
   },
   {
     id: 'poli-5',
@@ -97,8 +87,6 @@ const initialPoliklinikData: PoliklinikItem[] = [
     prefix: 'G',
     currentSeq: 11,
     totalQueue: 16,
-    orderTime: '06-08-2026 07:05 WIB',
-    processTime: '06-08-2026 09:30 WIB',
   },
   {
     id: 'poli-6',
@@ -111,13 +99,11 @@ const initialPoliklinikData: PoliklinikItem[] = [
     prefix: 'J',
     currentSeq: 6,
     totalQueue: 18,
-    orderTime: '06-08-2026 08:10 WIB',
-    processTime: '06-08-2026 10:40 WIB',
   },
 ];
 
 // ============================================================================
-// DETAIL MODAL COMPONENT
+// DETAIL MODAL COMPONENT (MATCHING EXACT USER SCREENSHOT DESIGN 1)
 // ============================================================================
 function DetailModal({
   data,
@@ -128,95 +114,114 @@ function DetailModal({
 }) {
   if (!data) return null;
 
-  const { item, waitingList, remaining } = data;
+  const { item, waitingList } = data;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 p-3 sm:p-5"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 sm:p-6"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-[520px] max-h-[90vh] overflow-y-auto overflow-hidden rounded-lg bg-white shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between bg-[#004A99] px-4 py-3 sm:px-5 sm:py-4 text-white">
-          <div>
-            <h3 className="text-base sm:text-lg font-bold">Antrian - {item.poliName}</h3>
-            <span className="text-xs text-blue-200">{item.room}</span>
+      <div className="w-full max-w-[480px] overflow-hidden rounded-[24px] bg-white shadow-2xl transition-all">
+        {/* Top Doctor Profile Section */}
+        <div className="flex items-center gap-4 p-6 pb-5">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#E5F1FB] text-[#3B78C2]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-10 w-10"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                clipRule="evenodd"
+              />
+            </svg>
           </div>
-          <button
-            onClick={onClose}
-            className="text-2xl text-white hover:text-gray-300"
-          >
-            &times;
-          </button>
+          <div className="flex flex-col gap-0.5">
+            <h3 className="text-xl font-extrabold text-[#1B2A4A]">
+              {item.docName}
+            </h3>
+            <p className="text-sm font-semibold text-gray-500">
+              Jam praktik : {item.schedule}
+            </p>
+            <div className="mt-1 flex items-center gap-1.5 text-xs font-extrabold text-[#27AE60]">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#27AE60]"></span>
+              SEDANG MELAYANI
+            </div>
+          </div>
         </div>
 
-        {/* Body */}
-        <div className="p-4 sm:p-5">
-          {/* Doctor Info */}
-          <div className="mb-4 rounded-lg border border-gray-200 bg-gray-50/70 p-3.5">
-            <h4 className="text-sm sm:text-base font-bold text-[#004A99]">
-              {item.docName}
-            </h4>
-            <p className="text-xs text-gray-500 mt-0.5">
-              <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i> Jam Praktik: {item.schedule}
-            </p>
-          </div>
-
-          {/* Waktu Order & Proses */}
-          <div className="mb-4 grid grid-cols-2 gap-3">
-            <div className="rounded-lg border border-gray-200 bg-white p-3 text-center">
-              <span className="block text-[11px] font-semibold text-gray-500 mb-1">Waktu Order</span>
-              <span className="text-[13px] sm:text-[14px] font-bold text-[#004A99]">
-                <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
-                {item.orderTime}
-              </span>
-            </div>
-            <div className="rounded-lg border border-gray-200 bg-white p-3 text-center">
-              <span className="block text-[11px] font-semibold text-gray-500 mb-1">Waktu Proses</span>
-              <span className="text-[13px] sm:text-[14px] font-bold text-[#004A99]">
-                <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
-                {item.processTime}
-              </span>
-            </div>
-          </div>
-
-          {/* Sisa Antrian */}
-          <div className="mb-4 rounded-lg border border-[#0584c0] bg-blue-50 p-3.5 text-center">
-            <span className="block text-[12px] font-semibold text-gray-600 mb-1">Sisa Antrian Menunggu</span>
-            <span className="text-2xl sm:text-3xl font-extrabold text-[#004A99]">
-              {remaining} <span className="text-base font-bold">Pasien</span>
+        {/* Middle Sedang Dipanggil Box */}
+        <div className="flex justify-center">
+          <div className="w-full max-w-[200px] bg-[#3B78C2] py-3 text-center text-white">
+            <span className="block text-[11px] font-extrabold tracking-wider opacity-90">
+              SEDANG DIPANGGIL
+            </span>
+            <span className="text-3xl font-black tracking-wide">
+              {item.currentNum}
             </span>
           </div>
-
-          {/* Daftar Antrian Menunggu */}
-          {waitingList.length > 0 && (
-            <>
-              <h5 className="mb-2.5 text-sm font-bold text-[#004A99]">
-                <i className="fa-solid fa-list-check text-[#004A99] mr-1.5"></i> Daftar Nomor Menunggu
-              </h5>
-              <div className="flex flex-wrap gap-2">
-                {waitingList.map((q, i) => (
-                  <span
-                    key={i}
-                    className="inline-block rounded-md border border-gray-300 bg-gray-50 px-3 py-1.5 text-[13px] font-bold text-gray-600"
-                  >
-                    {q.num}
-                  </span>
-                ))}
-              </div>
-            </>
-          )}
         </div>
 
-        {/* Footer - Close only */}
-        <div className="flex justify-end border-t border-gray-200 bg-gray-50 px-4 sm:px-5 py-3">
+        {/* Queue Table */}
+        <div className="w-full">
+          <table className="w-full border-collapse text-left text-sm">
+            <thead>
+              <tr className="bg-[#3B78C2] text-white">
+                <th className="px-5 py-3 text-xs font-extrabold uppercase tracking-wide">
+                  NO. ANTRIAN
+                </th>
+                <th className="px-5 py-3 text-xs font-extrabold uppercase tracking-wide">
+                  STATUS PANGGILAN
+                </th>
+                <th className="px-5 py-3 text-xs font-extrabold uppercase tracking-wide">
+                  WAKTU MASUK
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {/* Row 1: Current Called */}
+              <tr className="bg-white">
+                <td className="px-5 py-3 font-extrabold text-[#1B2A4A]">
+                  {item.currentNum}
+                </td>
+                <td className="px-5 py-3 font-extrabold text-[#3B78C2]">
+                  <i className="fa-solid fa-volume-high mr-2 text-[#3B78C2]"></i>
+                  Sedang diperiksa
+                </td>
+                <td className="px-5 py-3 font-bold text-gray-600">
+                  09:10 WIB
+                </td>
+              </tr>
+              {/* Waiting Rows */}
+              {waitingList.map((q, i) => (
+                <tr
+                  key={i}
+                  className={i % 2 === 1 ? 'bg-[#F8FAFC]' : 'bg-white'}
+                >
+                  <td className="px-5 py-3 font-extrabold text-[#1B2A4A]">
+                    {q.num}
+                  </td>
+                  <td className="px-5 py-3 font-semibold text-gray-500">
+                    Menunggu
+                  </td>
+                  <td className="px-5 py-3 font-semibold text-gray-400">-</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Bottom Red Kembali Button */}
+        <div className="flex justify-center p-6 pt-5 pb-6">
           <button
             onClick={onClose}
-            className="rounded-md bg-gray-400 px-4 py-2 text-sm font-bold text-white hover:bg-gray-500 transition-colors"
+            className="rounded-full bg-[#DC4B3E] px-10 py-2.5 text-sm font-extrabold tracking-wider text-white shadow-md hover:bg-[#c83b2e] transition-colors"
           >
-            Tutup
+            KEMBALI
           </button>
         </div>
       </div>
@@ -228,27 +233,11 @@ function DetailModal({
 // MAIN COMPONENT: ANTRIAN POLIKLINIK
 // ============================================================================
 export default function AntrianPoliklinik() {
-  const [poliklinikData, setPoliklinikData] = useState<PoliklinikItem[]>(
-    initialPoliklinikData
-  );
+  const [poliklinikData] = useState<PoliklinikItem[]>(initialPoliklinikData);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [countdown, setCountdown] = useState(60);
   const [modalData, setModalData] = useState<DetailModalData | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
-
-  // Auto-refresh countdown timer
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          return 60;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   // Filter data
   const filteredData = poliklinikData.filter((item) => {
@@ -263,7 +252,7 @@ export default function AntrianPoliklinik() {
     return matchesCat && matchesSearch;
   });
 
-  // Open detail modal - only show waiting items + remaining count
+  // Open detail modal - generate waiting queue numbers
   const openDetail = useCallback(
     (id: string) => {
       const item = poliklinikData.find((p) => p.id === id);
@@ -271,15 +260,14 @@ export default function AntrianPoliklinik() {
 
       const remaining = Math.max(0, item.totalQueue - item.currentSeq);
 
-      // Only generate waiting (future) queue numbers
-      const waitingList: { num: string }[] = [];
+      const waitingList: { num: string; status: string; time: string }[] = [];
       for (
         let i = item.currentSeq + 1;
-        i <= Math.min(item.totalQueue, item.currentSeq + 8);
+        i <= Math.min(item.totalQueue, item.currentSeq + 5);
         i++
       ) {
-        const numStr = `${item.prefix}-${String(i).padStart(3, '0')}`;
-        waitingList.push({ num: numStr });
+        const numStr = `${item.prefix}${String(i).padStart(2, '0')}`;
+        waitingList.push({ num: numStr, status: 'Menunggu', time: '-' });
       }
 
       setModalData({ item, waitingList, remaining });
@@ -290,7 +278,6 @@ export default function AntrianPoliklinik() {
   // Manual refresh with animation
   const handleRefresh = () => {
     setIsRefreshing(true);
-    setCountdown(60);
     setTimeout(() => setIsRefreshing(false), 600);
   };
 
@@ -401,12 +388,10 @@ export default function AntrianPoliklinik() {
         <div className="p-4 sm:p-5 flex flex-col gap-3 bg-[#F8FAFC]">
           {/* Header Legend - White with thin blue top border */}
           <div className="hidden md:grid grid-cols-12 gap-4 rounded-lg border-t-2 border-t-[#004A99] border border-gray-200 bg-white px-5 py-3 text-[#004A99] font-bold text-[14px] shadow-xs">
-            <div className="col-span-2">Ruang Pelayanan</div>
-            <div className="col-span-3">Spesialisasi / Dokter</div>
+            <div className="col-span-4">Ruang Pelayanan</div>
+            <div className="col-span-4">Spesialisasi / Dokter</div>
             <div className="col-span-2 text-center">No. Antrian</div>
-            <div className="col-span-2 text-center whitespace-nowrap">Waktu Order</div>
-            <div className="col-span-2 text-center whitespace-nowrap">Waktu Proses</div>
-            <div className="col-span-1 text-center">Aksi</div>
+            <div className="col-span-2 text-center">Aksi</div>
           </div>
 
           {/* Individual Queue Item Cards */}
@@ -421,7 +406,7 @@ export default function AntrianPoliklinik() {
                 className="rounded-lg border border-gray-200 bg-white p-4 sm:p-5 shadow-xs hover:border-[#0584c0] hover:shadow-md transition-all duration-200 flex flex-col md:grid md:grid-cols-12 gap-3 md:gap-4 items-start md:items-center"
               >
                 {/* Poli Name & Room */}
-                <div className="md:col-span-2 w-full">
+                <div className="md:col-span-4 w-full">
                   <strong className="block text-[15px] font-bold text-[#004A99]">
                     {item.poliName}
                   </strong>
@@ -431,7 +416,7 @@ export default function AntrianPoliklinik() {
                 </div>
 
                 {/* Doctor */}
-                <div className="md:col-span-3 w-full text-[14px] sm:text-[15px] font-bold text-gray-800">
+                <div className="md:col-span-4 w-full text-[14px] sm:text-[15px] font-bold text-gray-800">
                   <i className="fa-solid fa-user-doctor text-[#0584c0] mr-1.5 md:hidden"></i>
                   {item.docName}
                 </div>
@@ -444,29 +429,11 @@ export default function AntrianPoliklinik() {
                   </span>
                 </div>
 
-                {/* Waktu Order */}
-                <div className="md:col-span-2 w-full flex items-center justify-between md:justify-center">
-                  <span className="text-[12px] font-semibold text-gray-500 md:hidden">Waktu Order:</span>
-                  <span className="text-[12px] sm:text-[13px] font-semibold text-gray-700 whitespace-nowrap">
-                    <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
-                    {item.orderTime}
-                  </span>
-                </div>
-
-                {/* Waktu Proses */}
-                <div className="md:col-span-2 w-full flex items-center justify-between md:justify-center">
-                  <span className="text-[12px] font-semibold text-gray-500 md:hidden">Waktu Proses:</span>
-                  <span className="text-[12px] sm:text-[13px] font-semibold text-gray-700 whitespace-nowrap">
-                    <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
-                    {item.processTime}
-                  </span>
-                </div>
-
                 {/* Action Button */}
-                <div className="md:col-span-1 w-full flex justify-end md:justify-center pt-2 md:pt-0 border-t md:border-0 border-gray-100">
+                <div className="md:col-span-2 w-full flex justify-end md:justify-center pt-2 md:pt-0 border-t md:border-0 border-gray-100">
                   <button
                     onClick={() => openDetail(item.id)}
-                    className="w-full md:w-auto rounded-md bg-[#27a8df] px-4 py-2 text-[13px] font-bold text-white hover:bg-[#0584c0] transition-colors shadow-xs"
+                    className="w-full md:w-auto rounded-md bg-[#27a8df] px-5 py-2 text-[13px] font-bold text-white hover:bg-[#0584c0] transition-colors shadow-xs"
                   >
                     Detail
                   </button>
