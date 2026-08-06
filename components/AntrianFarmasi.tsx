@@ -90,10 +90,12 @@ function FarmasiStatusBadge({ status }: { status: string }) {
 // ============================================================================
 function TicketModal({
   isOpen,
+  prefilledTicket,
   onClose,
   farmasiData,
 }: {
   isOpen: boolean;
+  prefilledTicket: string;
   onClose: () => void;
   farmasiData: FarmasiItem[];
 }) {
@@ -120,27 +122,51 @@ function TicketModal({
 
       if (match) {
         setSearchResult(
-          <div className="rounded-lg border-l-4 border-[#004A99] border border-gray-200 bg-gray-50 p-3.5 text-sm">
-            <h4 className="font-bold text-[#004A99] text-base mb-1">
-              Resep No. {match.currentNum}
-            </h4>
-            <p className="text-gray-700">
-              <strong>Pasien:</strong> {match.patientName}
-            </p>
-            <p className="text-gray-700">
-              <strong>Loket:</strong> {match.counterName}
-            </p>
-            <p className="text-gray-700">
-              <strong>Status:</strong> {match.statusText}
-            </p>
+          <div className="rounded-lg border-l-4 border-[#004A99] border border-gray-200 bg-gray-50 p-4 text-sm">
+            <div className="flex items-center justify-between mb-3 border-b border-gray-200 pb-2">
+              <h4 className="font-bold text-[#004A99] text-base sm:text-lg">
+                <i className="fa-solid fa-receipt text-[#0584c0] mr-2"></i>
+                Resep No. {match.currentNum}
+              </h4>
+              <FarmasiStatusBadge status={match.status} />
+            </div>
+
+            <div className="space-y-2 text-gray-800 text-[14px]">
+              <p className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="text-gray-500 font-medium">Nama Pasien:</span>
+                <strong className="text-[#004A99]">{match.patientName}</strong>
+              </p>
+              <p className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="text-gray-500 font-medium">Loket Pelayanan:</span>
+                <span className="font-bold">{match.counterName}</span>
+              </p>
+              <p className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="text-gray-500 font-medium">Kategori Resep:</span>
+                <span className="font-semibold text-[#0584c0]">{match.catName}</span>
+              </p>
+              <p className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="text-gray-500 font-medium">Status Pengerjaan:</span>
+                <span className="font-bold text-green-700">{match.statusText}</span>
+              </p>
+              <p className="flex justify-between">
+                <span className="text-gray-500 font-medium">Estimasi Pengambilan:</span>
+                <span className="font-bold text-[#004A99]">
+                  <i className="fa-regular fa-clock text-[#0584c0] mr-1"></i>
+                  {match.estTime}
+                </span>
+              </p>
+            </div>
           </div>
         );
       } else {
         setSearchResult(
-          <div className="rounded-lg border-l-4 border-yellow-500 border border-yellow-200 bg-yellow-50 p-3.5 text-sm text-yellow-900">
+          <div className="rounded-lg border-l-4 border-yellow-500 border border-yellow-200 bg-yellow-50 p-4 text-sm text-yellow-900">
+            <p className="font-bold mb-1">
+              <i className="fa-solid fa-circle-info text-yellow-600 mr-1.5"></i>
+              Informasi Resep
+            </p>
             <p>
-              Nomor Tiket &quot;{searchCode}&quot; sedang berada dalam urutan
-              proses apotek.
+              Nomor Tiket &quot;<strong>{searchCode}</strong>&quot; sedang dalam proses persiapan di apotek. Silakan menunggu pemanggilan di lokasi.
             </p>
           </div>
         );
@@ -149,12 +175,21 @@ function TicketModal({
     [farmasiData]
   );
 
+  // Auto search when prefilledTicket is passed on open
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      if (prefilledTicket) {
+        setTicketInput(prefilledTicket);
+        performSearch(prefilledTicket);
+      } else {
+        setTicketInput('');
+        setSearchResult(null);
+      }
+    } else {
       setTicketInput('');
       setSearchResult(null);
     }
-  }, [isOpen]);
+  }, [isOpen, prefilledTicket, performSearch]);
 
   if (!isOpen) return null;
 
@@ -209,10 +244,10 @@ function TicketModal({
         </div>
 
         {/* Footer Container */}
-        <div className="border-t border-gray-200 bg-gray-50 px-4 sm:px-5 py-3">
+        <div className="border-t border-gray-200 bg-gray-50 px-4 sm:px-5 py-3 flex justify-end">
           <button
             onClick={onClose}
-            className="rounded-md bg-gray-400 px-4 py-2 text-sm font-bold text-white hover:bg-gray-500"
+            className="rounded-md bg-gray-400 px-4 py-2 text-sm font-bold text-white hover:bg-gray-500 transition-colors"
           >
             Tutup
           </button>
@@ -265,7 +300,7 @@ export default function AntrianFarmasi() {
     return matchesCat && matchesSearch;
   });
 
-  // Open ticket modal with pre-filled number
+  // Open ticket modal with pre-filled number and auto search
   const openTicketWithNumber = (ticketNum: string) => {
     setPrefilledTicket(ticketNum);
     setTicketModalOpen(true);
@@ -383,7 +418,10 @@ export default function AntrianFarmasi() {
           {/* Cek Status Resep Button */}
           <div className="flex gap-2.5">
             <button
-              onClick={() => setTicketModalOpen(true)}
+              onClick={() => {
+                setPrefilledTicket('');
+                setTicketModalOpen(true);
+              }}
               className="inline-flex items-center gap-2 rounded-md bg-[#daa732] px-4 py-2.5 text-sm font-bold text-gray-900 hover:bg-[#c49427] transition-colors w-full sm:w-auto justify-center shadow-xs"
             >
               <svg
@@ -512,7 +550,11 @@ export default function AntrianFarmasi() {
           ================================================================ */}
       <TicketModal
         isOpen={ticketModalOpen}
-        onClose={() => setTicketModalOpen(false)}
+        prefilledTicket={prefilledTicket}
+        onClose={() => {
+          setTicketModalOpen(false);
+          setPrefilledTicket('');
+        }}
         farmasiData={farmasiData}
       />
     </div>
